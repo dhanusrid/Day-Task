@@ -1,12 +1,153 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>JS Test</title>
+  <meta charset="UTF-8">
+  <title>Live Character Counter</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 10px;
+    }
+
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 15px;
+      padding: 10px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+    textarea {
+      width: 100%;
+      height: 120px;
+      margin-top: 10px;
+      padding: 10px;
+      resize: none;
+    }
+
+    .remaining {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    .warning {
+      color: orange;
+    }
+
+    .danger {
+      color: red;
+    }
+  </style>
 </head>
+
 <body>
 
-<h2>Product Details</h2>
+  <div class="container">
 
-<script src="script.js"></script>
+    <h2>Teacher Settings</h2>
+
+    <label>Maximum Characters</label>
+    Apply Settings
+
+    <label>Warning Limit (%)</label>
+    <input type="number" id="warningLimit" placeholder="Eg: 80">
+
+    <button type="button" id="applyBtn">Apply Settings</button>
+
+    <h2>Textarea</h2>
+
+    <textarea id="textArea" disabled placeholder="Apply settings first..."></textarea>
+
+    <div class="remaining" id="remainingText">
+      Remaining Characters: 0
+    </div>
+
+  </div>
+
+  <script>
+    let maxChars = 0;
+    let warningPercent = 0;
+
+    const applyBtn = document.getElementById("applyBtn");
+    const textArea = document.getElementById("textArea");
+    const remainingText = document.getElementById("remainingText");
+
+    applyBtn.addEventListener("click", function () {
+
+      maxChars = Number(document.getElementById("maxChars").value);
+      warningPercent = Number(document.getElementById("warningLimit").value);
+
+      if (maxChars <= 0 || warningPercent <= 0 || warningPercent >= 100) {
+        alert("Enter valid values");
+        return;
+      }
+
+      textArea.disabled = false;
+      textArea.value = "";
+      remainingText.textContent = "Remaining Characters: " + maxChars;
+      remainingText.className = "remaining";
+
+    });
+
+    textArea.addEventListener("input", function () {
+
+      let typed = textArea.value.length;
+
+      if (typed > maxChars) {
+        textArea.value = textArea.value.substring(0, maxChars);
+        typed = maxChars;
+      }
+
+      let remaining = maxChars - typed;
+      remainingText.textContent = "Remaining Characters: " + remaining;
+
+      let usedPercent = (typed / maxChars) * 100;
+
+      if (usedPercent >= warningPercent) {
+        remainingText.className = "remaining warning";
+      }
+
+      if (typed === maxChars) {
+        remainingText.className = "remaining danger";
+      }
+    });
+  </script>
+
 </body>
 </html>
